@@ -41,13 +41,13 @@ app.use('/', index);
 
 passport.use(new Strategy(
 	function(username, password, cb) {
-		Users.findOne({ username: username }, function(err, person) {
+		Users.findOne({ username: username }, function(err, user) {
 			if(err) res.send(err.message);
-      let isVerified = passwordHash.verify(password, person.password);
-			if(person.username == username && isVerified) {
-				cb(null, person);
+      let isVerified = passwordHash.verify(password, user.password);
+			if(user.username == username && isVerified) {
+				cb(null, user);
 			}else {
-				cb('USERNAME AND PASSWORD NOT MATCH!')
+				cb(null, 'invalid username or password')
 			}
 		});
 	}

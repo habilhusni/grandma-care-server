@@ -1,9 +1,9 @@
 'use strict'
 var jwt = require('jsonwebtoken');
+require('dotenv').config()
 let helper = {}
 helper.authenticate = (req, res, next) => {
 	jwt.verify(req.headers.token, 'secret', function(err, decoded) {
-		// console.log(decoded)
 		if(decoded) {
 			next()
 		}else {

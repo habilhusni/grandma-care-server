@@ -107,8 +107,11 @@ user.updateLocation = (req,res) => {
 	})
 }
 user.login = (req, res) => {
-	var token = jwt.sign({username: req.body.username, password: req.body.password}, 'secret');
-  res.send({token: token});
+	var token = jwt.sign({username: req.user.username, password: req.user.password}, 'secret');
+  res.send({
+		token: token,
+		id: req.user.id,
+	});
 }
 
 module.exports = user
