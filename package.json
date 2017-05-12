@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/arfanizar/grandma-care#readme",
   "dependencies": {
+    "aws-iot-device-sdk": "^1.0.14",
     "body-parser": "^1.17.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
