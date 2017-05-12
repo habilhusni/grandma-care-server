@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
-    "start": "node app.js"
+    "start": "pm2 start app.js"
   },
   "repository": {
     "type": "git",
