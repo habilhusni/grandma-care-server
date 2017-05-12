@@ -33,7 +33,10 @@ user.createUser = (req, res) => {
       password	: password.generate(req.body.password),
 			phone			: req.body.phone,
 			latitude	: 0,
-			longitude : 0
+			longitude : 0,
+			accellX		: 0,
+			accellY		: 0,
+			accellZ		: 0
 		});
 	user.save((err, data) => {
   	if (err) res.send(err);
@@ -97,6 +100,23 @@ user.updateLocation = (req,res) => {
 		},{
 			latitude  : Number(req.params.latitude),
 			longitude : Number(req.params.longitude),
+		},{
+			new: true, safe: true, upsert: true
+		},(err, data) => {
+		if(err) {
+			res.send(err)
+		} else {
+			res.send(data)
+		}
+	})
+}
+user.updateSensor = (req,res) => {
+	User.findOneAndUpdate({
+			_id: req.params.userId
+		},{
+			accellX : Number(req.params.x),
+			accellY : Number(req.params.y),
+			accellZ : Number(req.params.z)
 		},{
 			new: true, safe: true, upsert: true
 		},(err, data) => {
