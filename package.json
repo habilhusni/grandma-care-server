@@ -1,0 +1,37 @@
+{
+  "name": "grandma-care",
+  "version": "1.0.0",
+  "description": "simple react-native based mobile apps for reading and processing smartphone sensors",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arfanizar/grandma-care.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arfanizar/grandma-care/issues"
+  },
+  "homepage": "https://github.com/arfanizar/grandma-care#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "cors": "^2.8.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.2",
+    "jsonwebtoken": "^7.4.0",
+    "mongoose": "^4.9.8",
+    "morgan": "^1.8.1",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "password-hash": "^1.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
