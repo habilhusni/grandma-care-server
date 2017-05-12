@@ -4,6 +4,7 @@ const router 		= express.Router();
 const User 			= require('../models/user');
 const password 	= require('password-hash');
 const jwt				= require('jsonwebtoken');
+required('dotenv').config()
 
 const user = {}
 
@@ -32,7 +33,10 @@ user.createUser = (req, res) => {
       password	: password.generate(req.body.password),
 			phone			: req.body.phone,
 			latitude	: 0,
-			longitude : 0
+			longitude : 0,
+			accellX		: 0,
+			accellY		: 0,
+			accellZ		: 0
 		});
 	user.save((err, data) => {
   	if (err) res.send(err);
@@ -106,9 +110,29 @@ user.updateLocation = (req,res) => {
 		}
 	})
 }
+user.updateSensor = (req,res) => {
+	User.findOneAndUpdate({
+			_id: req.params.userId
+		},{
+			accellX : Number(req.params.x),
+			accellY : Number(req.params.y),
+			accellZ : Number(req.params.z)
+		},{
+			new: true, safe: true, upsert: true
+		},(err, data) => {
+		if(err) {
+			res.send(err)
+		} else {
+			res.send(data)
+		}
+	})
+}
 user.login = (req, res) => {
-	var token = jwt.sign({username: req.body.username, password: req.body.password}, 'secret');
-  res.send({token: token});
+	var token = jwt.sign({username: req.user.username, password: req.user.password}, process.env.SECRET);
+  res.send({
+		token: token,
+		id: req.user.id,
+	});
 }
 
 module.exports = user

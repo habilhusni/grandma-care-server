@@ -11,6 +11,7 @@ router.post('/login', passport.authenticate('local', { session: false }), userCo
 router.put('/users/:userId/:friendId', auth.authenticate, userControl.addFriend);
 router.put('/users/:userId', auth.authenticate, userControl.updateUser);
 router.put('/users/:userId/location/:latitude/:longitude', auth.authenticate, userControl.updateLocation);
+router.put('/users/:userId/accelero/:x/:y/:z', auth.authenticate, userControl.updateSensor);
 router.delete('/users/:userId', auth.authenticate, userControl.delUser);
 router.delete('/users/:userId/:friendId', auth.authenticate, userControl.removeFriend);
 
