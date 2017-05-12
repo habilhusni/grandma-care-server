@@ -4,6 +4,7 @@ const router 		= express.Router();
 const User 			= require('../models/user');
 const password 	= require('password-hash');
 const jwt				= require('jsonwebtoken');
+required('dotenv').config()
 
 const user = {}
 
@@ -107,7 +108,7 @@ user.updateLocation = (req,res) => {
 	})
 }
 user.login = (req, res) => {
-	var token = jwt.sign({username: req.user.username, password: req.user.password}, 'secret');
+	var token = jwt.sign({username: req.user.username, password: req.user.password}, process.env.SECRET);
   res.send({
 		token: token,
 		id: req.user.id,
