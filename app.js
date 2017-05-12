@@ -8,7 +8,7 @@ const jwt 					= require('jsonwebtoken');
 const passwordHash 	= require('password-hash');
 const mongoose 			= require('mongoose');
 const logger 				= require('morgan');
-// require('dotenv').config()
+require('dotenv').config()
 
 const app 					= express();
 const Users 				= require('./models/user');
