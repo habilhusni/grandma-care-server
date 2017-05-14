@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
-    "start": "pm2 start app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/arfanizar/grandma-care#readme",
   "dependencies": {
+    "aws-iot-device-sdk": "^1.0.14",
     "body-parser": "^1.17.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
@@ -27,6 +28,7 @@
     "jsonwebtoken": "^7.4.0",
     "mongoose": "^4.9.8",
     "morgan": "^1.8.1",
+    "nodemailer": "^4.0.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "password-hash": "^1.2.2"

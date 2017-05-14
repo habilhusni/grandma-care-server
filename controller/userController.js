@@ -4,8 +4,16 @@ const router 		= express.Router();
 const User 			= require('../models/user');
 const password 	= require('password-hash');
 const jwt				= require('jsonwebtoken');
-required('dotenv').config()
+const awsIot 		= require('aws-iot-device-sdk');
+require('dotenv').config()
 
+const device = awsIot.device({
+   keyPath: './device-accelerometer.private.key',
+  certPath: './device-accelerometer.cert.pem',
+    caPath: './root-CA.crt',
+      host: 'a38x4799nd8aym.iot.eu-central-1.amazonaws.com',
+    region: 'eu-central-1'
+});
 const user = {}
 
 user.getUser = (req, res) => {
@@ -124,6 +132,7 @@ user.updateSensor = (req,res) => {
 			res.send(err)
 		} else {
 			res.send(data)
+	    device.publish('topic_2', JSON.stringify({userId:data._id, x: data.accellX, y: data.accellY, z: data.accellZ}));
 		}
 	})
 }
