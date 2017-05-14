@@ -37,14 +37,15 @@ user.getOneUser = (req, res) => {
 user.createUser = (req, res) => {
 	let user = new User(
 		{
-      username	: req.body.username,
-      password	: password.generate(req.body.password),
-			phone			: req.body.phone,
-			latitude	: 0,
+      username : req.body.username,
+      password : password.generate(req.body.password),
+			phone : req.body.phone,
+      email : req.body.email,
+			latitude : 0,
 			longitude : 0,
-			accellX		: 0,
-			accellY		: 0,
-			accellZ		: 0
+			accellX : 0,
+			accellY : 0,
+			accellZ : 0
 		});
 	user.save((err, data) => {
   	if (err) res.send(err);
@@ -55,9 +56,10 @@ user.updateUser = (req, res) => {
 	User.findOneAndUpdate({
 		_id: req.params.userId
 	},{
-		username: req.body.username,
-	  password: password.generate(req.body.newPassword),
-	  phone: req.body.phone,
+		username : req.body.username,
+	  password : password.generate(req.body.newPassword),
+	  phone : req.body.phone,
+    email : req.body.email
 	},(err, data) => {
 		if(err) {
 			res.send(err)
@@ -132,7 +134,7 @@ user.updateLocation = (req,res) => {
 	User.findOneAndUpdate({
 			_id: req.params.userId
 		},{
-			latitude  : Number(req.params.latitude),
+			latitude : Number(req.params.latitude),
 			longitude : Number(req.params.longitude),
 		},{
 			new: true, safe: true, upsert: true

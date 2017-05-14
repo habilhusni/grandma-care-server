@@ -1,21 +1,21 @@
-const express 			= require('express');
-const cors 					= require('cors');
-const bodyParser 		= require('body-parser');
-const passport 			= require('passport');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const passport = require('passport');
 const passportLocal = require('passport-local');
-const Strategy 			= passportLocal.Strategy;
-const jwt 					= require('jsonwebtoken');
-const passwordHash 	= require('password-hash');
-const mongoose 			= require('mongoose');
-const logger 				= require('morgan');
-const awsIot 				= require('aws-iot-device-sdk');
-const nodemailer    = require('nodemailer');
+const Strategy = passportLocal.Strategy;
+const jwt	= require('jsonwebtoken');
+const passwordHash = require('password-hash');
+const mongoose = require('mongoose');
+const logger = require('morgan');
+const awsIot = require('aws-iot-device-sdk');
+const nodemailer = require('nodemailer');
 require('dotenv').config()
 
-const app 					= express();
-const Users 				= require('./models/user');
-const index 				= require('./routes/index');
-const device 				= awsIot.device({
+const app = express();
+const Users = require('./models/user');
+const index = require('./routes/index');
+const device = awsIot.device({
    keyPath: './device-accelerometer.private.key',
   certPath: './device-accelerometer.cert.pem',
     caPath: './root-CA.crt',
@@ -48,6 +48,11 @@ device
 device
   .on('message', function(topic, payload) {
     console.log('message', topic, payload.toString());
+    let obj = JSON.parse(payload.toString())
+    console.log(obj.userId);
+    console.log(obj.x);
+    console.log(obj.y);
+    console.log(obj.z);
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         return console.log(error);
