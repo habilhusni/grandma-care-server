@@ -75,17 +75,31 @@ user.delUser = (req, res) => {
 	})
 }
 user.addFriend = (req,res) => {
-	User.findOneAndUpdate(
-		{_id: req.params.userId},
-		{$push: {friends: req.params.friendId}},
-		{new: true, safe: true, upsert: true}
-		,(err, data) => {
+	User.findOneAndUpdate({
+    _id: req.params.userId
+  },{
+    $push: {friends: req.params.friendId}
+  },{
+    new: true, safe: true, upsert: true
+  },(err, data) => {
 		if(err) {
 			res.send(err)
 		} else {
-			res.send(data)
+      User.findOneAndUpdate({
+        _id: req.params.friendId
+      },{
+        $push: {friends: req.params.userId}
+      },{
+        new: true, safe: true, upsert: true
+      },(err, data) => {
+    		if(err) {
+    			res.send(err)
+    		} else {
+    			res.send(data)
+    		}
+    	});
 		}
-	})
+	});
 }
 user.removeFriend = (req,res) => {
 	User.findOneAndUpdate({
@@ -98,9 +112,21 @@ user.removeFriend = (req,res) => {
 		if(err) {
 			res.send(err)
 		} else {
-			res.send(data)
+      User.findOneAndUpdate({
+    			_id: req.params.userId
+    		},{
+    			$pull: {'friends': req.params.friendId}
+    		},{
+    			new: true, safe: true, upsert: true
+    		},(err, data) => {
+    		if(err) {
+    			res.send(err)
+    		} else {
+    			res.send(data)
+    		}
+    	});
 		}
-	})
+	});
 }
 user.updateLocation = (req,res) => {
 	User.findOneAndUpdate({
