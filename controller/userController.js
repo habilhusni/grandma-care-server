@@ -1,10 +1,10 @@
 'use strict'
-const express 	= require('express');
-const router 		= express.Router();
-const User 			= require('../models/user');
-const password 	= require('password-hash');
-const jwt				= require('jsonwebtoken');
-const awsIot 		= require('aws-iot-device-sdk');
+const express = require('express');
+const router = express.Router();
+const User = require('../models/user');
+const password = require('password-hash');
+const jwt = require('jsonwebtoken');
+const awsIot = require('aws-iot-device-sdk');
 require('dotenv').config()
 
 const device = awsIot.device({
@@ -48,8 +48,13 @@ user.createUser = (req, res) => {
 			accellZ : 0
 		});
 	user.save((err, data) => {
-  	if (err) res.send(err);
-		res.send(data);
+  	if (err) {
+      res.send(err);
+    } else if (data.hasOwnProperty('errors')) {
+      res.status(400).send(err);
+    } else {
+      res.send(data);
+    }
 	});
 }
 user.updateUser = (req, res) => {
@@ -61,11 +66,13 @@ user.updateUser = (req, res) => {
 	  phone : req.body.phone,
     email : req.body.email
 	},(err, data) => {
-		if(err) {
-			res.send(err)
-		} else {
-			res.send(data)
-		}
+    if (err) {
+      res.send(err);
+    } else if (data.hasOwnProperty('errors')) {
+      res.status(400).send(err);
+    } else {
+      res.send(data);
+    }
 	})
 }
 user.delUser = (req, res) => {

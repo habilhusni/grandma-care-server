@@ -4,18 +4,28 @@ var Schema = mongoose.Schema;
 var userSchema = new Schema({
   username : {type: String, required: true, unique: true},
   password : {type: String, required: true},
-  phone : {type: String, required: true, unique: true},
+  phone : {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: function(v) {
+        return /([0-9]{10,13})/.test(v);
+      },
+      message: '{VALUE} is not a valid phone!'
+    }
+  },
   email: {
-        type: String,
-        required: true,
-        unique: true,
-        validate: {
-          validator: function(v) {
-            return /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(v);
-          },
-          message: '{VALUE} is not a valid email!'
-        }
-      }
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: function(v) {
+        return /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(v);
+      },
+      message: '{VALUE} is not a valid email!'
+    }
+  },
   latitude : {type: Number, default: 0},
   longitude : {type: Number, default: 0},
   accellX : {type: Number, default: 0},
