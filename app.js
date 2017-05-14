@@ -90,13 +90,13 @@ passport.use(new Strategy(
 	function(username, password, cb) {
 		Users.findOne({ username: username }, function(err, user) {
 			if(err || user == null) {
-        cb(null, err)
+        cb(null, err);
       } else {
         let isVerified = passwordHash.verify(password, user.password);
   			if(user.username == username && isVerified) {
   				cb(null, user);
   			}else {
-  				cb(null, 'invalid username or password')
+  				cb(null, err);
   			}
       }
 		});
