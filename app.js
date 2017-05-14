@@ -9,6 +9,7 @@ const passwordHash 	= require('password-hash');
 const mongoose 			= require('mongoose');
 const logger 				= require('morgan');
 const awsIot 				= require('aws-iot-device-sdk');
+const nodemailer    = require('nodemailer');
 require('dotenv').config()
 
 const app 					= express();
@@ -22,15 +23,37 @@ const device 				= awsIot.device({
     region: 'eu-central-1'
 });
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  }
+});
+
+let mailOptions = {
+    from    : '"Grandma Care" <grandma@care.com>', // sender address
+    to      : 'arfanizar.fth@gmail.com', // list of receivers
+    subject : 'URGENT', // Subject line
+    text    : 'We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?', // plain text body
+    html    : '<b>We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?</b>' // html body
+};
+
 device
   .on('connect', function() {
-    console.log('aws iot connected');
+    console.log('AWS IOT connected');
     device.subscribe('topic_1');
     });
 
 device
   .on('message', function(topic, payload) {
     console.log('message', topic, payload.toString());
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log('Message %s sent: %s', info.messageId, info.response);
+    });
   });
 
 mongoose.Promise = global.Promise
@@ -61,13 +84,16 @@ app.use('/', index);
 passport.use(new Strategy(
 	function(username, password, cb) {
 		Users.findOne({ username: username }, function(err, user) {
-			if(err) res.send(err.message);
-      let isVerified = passwordHash.verify(password, user.password);
-			if(user.username == username && isVerified) {
-				cb(null, user);
-			}else {
-				cb(null, 'invalid username or password')
-			}
+			if(err || user == null) {
+        cb(null, err)
+      } else {
+        let isVerified = passwordHash.verify(password, user.password);
+  			if(user.username == username && isVerified) {
+  				cb(null, user);
+  			}else {
+  				cb(null, 'invalid username or password')
+  			}
+      }
 		});
 	}
 ));

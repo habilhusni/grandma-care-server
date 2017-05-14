@@ -5,7 +5,7 @@ const User 			= require('../models/user');
 const password 	= require('password-hash');
 const jwt				= require('jsonwebtoken');
 const awsIot 		= require('aws-iot-device-sdk');
-required('dotenv').config()
+require('dotenv').config()
 
 const device = awsIot.device({
    keyPath: './device-accelerometer.private.key',
