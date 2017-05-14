@@ -49,7 +49,7 @@ user.createUser = (req, res) => {
 		});
 	user.save((err, data) => {
   	if (err) {
-      res.send(err);
+      res.status(400).send(err);
     } else if (data.hasOwnProperty('errors')) {
       res.status(400).send(err);
     } else {
