@@ -31,14 +31,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-let mailOptions = {
-    from    : '"Grandma Care" <grandma@care.com>', // sender address
-    to      : 'arfanizar.fth@gmail.com', // list of receivers
-    subject : 'URGENT', // Subject line
-    text    : 'We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?', // plain text body
-    html    : '<b>We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?</b>' // html body
-};
-
 device
   .on('connect', function() {
     console.log('AWS IOT connected');
@@ -53,12 +45,27 @@ device
     console.log(obj.x);
     console.log(obj.y);
     console.log(obj.z);
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return console.log(error);
-      }
-      console.log('Message %s sent: %s', info.messageId, info.response);
-    });
+    User
+  	.findOne({_id: obj.userId})
+  	.populate('friends')
+  	.exec((err, data) => {
+  		if (err) console.log(err)
+      data.friends.map(friend => {
+        let mailOptions = {
+            from    : '"Grandma Care" <grandma@care.com>', // sender address
+            to      : friend.email, // list of receivers
+            subject : 'URGENT', // Subject line
+            text    : 'We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?', // plain text body
+            html    : '<b>We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?</b>' // html body
+        };
+        return transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message %s sent: %s', info.messageId, info.response);
+        });
+      });
+  	});
   });
 
 mongoose.Promise = global.Promise
