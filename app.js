@@ -55,8 +55,8 @@ device
             from    : '"Grandma Care" <grandma@care.com>', // sender address
             to      : friend.email, // list of receivers
             subject : 'URGENT', // Subject line
-            text    : 'We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?', // plain text body
-            html    : '<b>We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?</b>' // html body
+            text    : `We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username} grandma?`, // plain text body
+            html    : `<b>Last known location : http://maps.google.com/maps?q=${data.latitude},${data.longitude} </b>` // html body
         };
         return transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
