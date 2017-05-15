@@ -118,9 +118,9 @@ user.removeFriend = (req,res) => {
 			res.send(err)
 		} else {
       User.findOneAndUpdate({
-    			_id: req.params.userId
+    			_id: req.params.friendId
     		},{
-    			$pull: {'friends': req.params.friendId}
+    			$pull: {'friends': req.params.userId}
     		},{
     			new: true, safe: true, upsert: true
     		},(err, data) => {
