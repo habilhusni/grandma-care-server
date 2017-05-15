@@ -50,8 +50,6 @@ user.createUser = (req, res) => {
 	user.save((err, data) => {
   	if (err) {
       res.status(400).send(err);
-    } else if (data.hasOwnProperty('errors')) {
-      res.status(400).send(err);
     } else {
       res.send(data);
     }
@@ -67,8 +65,6 @@ user.updateUser = (req, res) => {
     email : req.body.email
 	},(err, data) => {
     if (err) {
-      res.status(400).send(err);
-    } else if (data.hasOwnProperty('errors')) {
       res.status(400).send(err);
     } else {
       res.send(data);
