@@ -45,7 +45,7 @@ device
     console.log(obj.x);
     console.log(obj.y);
     console.log(obj.z);
-    User
+    Users
   	.findOne({_id: obj.userId})
   	.populate('friends')
   	.exec((err, data) => {
