@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const logger = require('morgan');
 const awsIot = require('aws-iot-device-sdk');
 const nodemailer = require('nodemailer');
+const CronJob = require('cron').CronJob;
 require('dotenv').config()
 
 const app = express();
@@ -31,6 +32,30 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+new CronJob('* * 5 * * *', function() {
+  Users
+  .find()
+  .exec((err,data) => {
+    if (err) console.log(err)
+    data.map(user => {
+      if(user.email){
+        let mailOptions = {
+            from    : '"Grandma Care" <grandma@care.com>', // sender address
+            to      : user.email, // list of receivers
+            subject : `Hey ${user.username}, how are you?`, // Subject line
+            html    : `<h2> <b> Have you say 'Hello' with your grandma today?, perhaps a simple hello word from you can make her happy! </b> </h2>` // html body
+        };
+        return transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message %s sent: %s', info.messageId, info.response);
+        });
+      } else {}
+    })
+  })
+}, null, true, 'Asia/Jakarta');
+
 device
   .on('connect', function() {
     console.log('AWS IOT connected');
@@ -45,7 +70,7 @@ device
     console.log(obj.x);
     console.log(obj.y);
     console.log(obj.z);
-    User
+    Users
   	.findOne({_id: obj.userId})
   	.populate('friends')
   	.exec((err, data) => {
@@ -55,8 +80,8 @@ device
             from    : '"Grandma Care" <grandma@care.com>', // sender address
             to      : friend.email, // list of receivers
             subject : 'URGENT', // Subject line
-            text    : 'We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?', // plain text body
-            html    : '<b>We have detected that there is something wrong with your grandma phone, perhaps something happened with your grandma?</b>' // html body
+            text    : `We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username} grandma?`, // plain text body
+            html    : `<h5> <b> We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username}? Last known location : http://maps.google.com/maps?q=${data.latitude},${data.longitude} </b> </h5>` // html body
         };
         return transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
