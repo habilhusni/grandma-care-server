@@ -34,6 +34,10 @@ var userSchema = new Schema({
   friends : [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
-var User = mongoose.model('User', userSchema);
+userSchema.pre('remove', function(next) {
+  this.model('User').remove({ person: this._id }, next);
+});
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
