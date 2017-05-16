@@ -12,7 +12,7 @@ const expect    = chai.expect;
 
 chai.use(chaiHttp);
 
-describe('Login Testing', () => {
+describe('USER LOGIN TESTING', () => {
   let token = null;
   beforeEach(function(done){
     //token dummy for testing
@@ -34,7 +34,7 @@ describe('Login Testing', () => {
     });
   });
 
-  describe('SIGNUP /users', () =>{
+  describe('SIGNUP /users with new users', () =>{
     it('should return new users', (done)=>{
       chai.request('http://localhost:3000')
       .post('/signup')
@@ -47,14 +47,14 @@ describe('Login Testing', () => {
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.username.should.equal("arfanizar");
-        res.body.password.should.a("string");
         res.body.phone.should.equal("+6280123456789");
+        res.body.password.should.a("string");
         done();
       });
     });
   });
 
-  describe('LOGIN /users', () =>{
+  describe('LOGIN /users with registered account', () =>{
     it('should return token', (done)=>{
       chai.request('http://localhost:3000')
       .post('/login')

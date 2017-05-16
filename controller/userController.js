@@ -60,7 +60,6 @@ user.updateUser = (req, res) => {
 		_id: req.params.userId
 	},{
 		username : req.body.username,
-	  password : password.generate(req.body.newPassword),
 	  phone : req.body.phone,
     email : req.body.email
 	},(err, data) => {
