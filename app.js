@@ -32,7 +32,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-new CronJob('* * * * * *', function() {
+new CronJob('* * 5 * * *', function() {
   Users
   .find()
   .exec((err,data) => {
@@ -43,7 +43,7 @@ new CronJob('* * * * * *', function() {
             from    : '"Grandma Care" <grandma@care.com>', // sender address
             to      : user.email, // list of receivers
             subject : `Hey ${user.username}, how are you?`, // Subject line
-            html    : `<h4> <b> Have you say 'Hello' with your grandma today?, perhaps a simple hello word from you can make her happy! </b> </h4>` // html body
+            html    : `<h2> <b> Have you say 'Hello' with your grandma today?, perhaps a simple hello word from you can make her happy! </b> </h2>` // html body
         };
         return transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
