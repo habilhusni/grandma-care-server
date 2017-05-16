@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const logger = require('morgan');
 const awsIot = require('aws-iot-device-sdk');
 const nodemailer = require('nodemailer');
+const CronJob = require('cron').CronJob;
 require('dotenv').config()
 
 const app = express();
@@ -30,6 +31,30 @@ const transporter = nodemailer.createTransport({
     pass: process.env.PASSWORD
   }
 });
+
+new CronJob('* * * * * *', function() {
+  Users
+  .find()
+  .exec((err,data) => {
+    if (err) console.log(err)
+    data.map(user => {
+      if(user.email){
+        let mailOptions = {
+            from    : '"Grandma Care" <grandma@care.com>', // sender address
+            to      : user.email, // list of receivers
+            subject : `Hey ${user.username}, how are you?`, // Subject line
+            html    : `<h4> <b> Have you say 'Hello' with your grandma today?, perhaps a simple hello word from you can make her happy! </b> </h4>` // html body
+        };
+        return transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message %s sent: %s', info.messageId, info.response);
+        });
+      } else {}
+    })
+  })
+}, null, true, 'Asia/Jakarta');
 
 device
   .on('connect', function() {
