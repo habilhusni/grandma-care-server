@@ -12,7 +12,7 @@ const expect    = chai.expect;
 
 chai.use(chaiHttp);
 
-describe('Login Testing', () => {
+describe('USER LOGIN TESTING', () => {
   let token = null;
   beforeEach(function(done){
     //token dummy for testing
@@ -34,9 +34,9 @@ describe('Login Testing', () => {
     });
   });
 
-  describe('SIGNUP /users', () =>{
+  describe('SIGNUP /users with new users', () =>{
     it('should return new users', (done)=>{
-      chai.request('http://localhost:3000')
+      chai.request(server)
       .post('/signup')
       .send({
         username: "arfanizar",
@@ -47,16 +47,16 @@ describe('Login Testing', () => {
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.username.should.equal("arfanizar");
-        res.body.password.should.a("string");
         res.body.phone.should.equal("+6280123456789");
+        res.body.password.should.a("string");
         done();
       });
     });
   });
 
-  describe('LOGIN /users', () =>{
+  describe('LOGIN /users with registered account', () =>{
     it('should return token', (done)=>{
-      chai.request('http://localhost:3000')
+      chai.request(server)
       .post('/login')
       .send({
         username: "john",
@@ -70,8 +70,25 @@ describe('Login Testing', () => {
     });
   });
 
+  describe('LOGIN /users with unregistered account', () =>{
+    it('should return unauthorized', (done)=>{
+      chai.request(server)
+      .post('/login')
+      .send({
+        username: "admin",
+        password: "admin"
+      })
+      .end((err,res)=>{
+        res.should.have.status(401);
+        res.body.should.be.a('string');
+        res.body.should.equal("Unauthorized");
+        done();
+      });
+    });
+  });
+
   function generateTokenDummy(){
-    return jwt.sign({username: "john", role: "admin"}, process.env.SECRETKEYS);
+    return jwt.sign({username: "john", role: "admin"}, process.env.SECRET);
   }
 
 })

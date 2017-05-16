@@ -12,7 +12,7 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
   let currentData, secondData, token
 
   function generateTokenDummy(){
-    return jwt.sign({username: "john", role: "admin"}, process.env.SECRETKEYS);
+    return jwt.sign({username: "john", role: "admin"}, process.env.SECRET);
   }
 
   beforeEach((done)=> {
@@ -20,21 +20,24 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       new User({
         username: 'test1',
         password: '12345',
-        phone: '+6288334400117',
+        phone: '+6288334400107',
+        email: 'something@gmail.com',
         latitude	: 0,
   			longitude : 0
       }),
       new User({
         username: 'test1friend',
         password: '12345',
-        phone: '+6288334400117',
+        phone: '+6288334400108',
+        email: 'something1@gmail.com',
         latitude	: 0,
   			longitude : 0
       }),
       new User({
         username: 'test2friend',
         password: '12345',
-        phone: '+6288334400117',
+        phone: '+6288334400109',
+        email: 'something2@gmail.com',
         latitude	: 0,
   			longitude : 0
       })
@@ -70,7 +73,8 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       .send({
         username: 'test2',
         password: '54321',
-        phone: '+6288443300227'
+        phone: '+6288443300227',
+        email: 'something3@gmail.com'
       }).end((err,res)=> {
         res.should.have.status(200)
         res.body.should.have.property('username')
@@ -118,7 +122,8 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       .send({
         username: 'test3',
         newPassword: '12345',
-        phone: '+6288334400118'
+        phone: '+6288334400120',
+        email: 'something5@gmail.com'
       }).end((err,res)=> {
         res.should.have.status(200)
         done()
@@ -154,10 +159,11 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       .send({
         username: 'test2',
         password: '54321',
-        phone: '+6288443300227'
+        phone: '+6288443300227',
+        email: 'something6@gmail.com'
       }).end((err,res)=> {
         chai.request(server)
-          .put(`/users/${currentData._id}/${res.body._id}`)
+          .put(`/users/${currentData._id}/add/${res.body.email}`)
           .set('token', token)
           .end((err,res)=> {
             res.should.have.status(200)
@@ -171,11 +177,11 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
 
   it('Remove friend in database', (done)=> {
     chai.request(server)
-      .delete(`/users/${currentData._id}/${secondData._id}`)
+      .delete(`/users/${currentData._id}/remove/${secondData._id}`)
       .set('token', token)
       .end((err,res)=> {
         res.should.have.status(200)
-        res.body.friends.should.have.lengthOf(1)
+        res.body.friends.should.have.lengthOf(0)
         done()
       })
   })

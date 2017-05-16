@@ -32,7 +32,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-new CronJob('* * 5 * * *', function() {
+new CronJob('0 0 5 * * *', function() {
   Users
   .find()
   .exec((err,data) => {
@@ -43,7 +43,7 @@ new CronJob('* * 5 * * *', function() {
             from    : '"Grandma Care" <grandma@care.com>', // sender address
             to      : user.email, // list of receivers
             subject : `Hey ${user.username}, how are you?`, // Subject line
-            html    : `<h2> <b> Have you say 'Hello' with your grandma today?, perhaps a simple hello word from you can make her happy! </b> </h2>` // html body
+            html    : `<h2> Have you say 'Hello' with your grandma today?, perhaps a simple hello word from you can make her happy! </h2>` // html body
         };
         return transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
@@ -81,7 +81,7 @@ device
             to      : friend.email, // list of receivers
             subject : 'URGENT', // Subject line
             text    : `We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username} grandma?`, // plain text body
-            html    : `<h5> <b> We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username}? Last known location : http://maps.google.com/maps?q=${data.latitude},${data.longitude} </b> </h5>` // html body
+            html    : `<h3> <b> We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username}? Last known location : http://maps.google.com/maps?q=${data.latitude},${data.longitude} </b> </h3>` // html body
         };
         return transporter.sendMail(mailOptions, (error, info) => {
           if (error) {

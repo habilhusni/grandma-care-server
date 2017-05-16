@@ -60,7 +60,6 @@ user.updateUser = (req, res) => {
 		_id: req.params.userId
 	},{
 		username : req.body.username,
-	  password : password.generate(req.body.newPassword),
 	  phone : req.body.phone,
     email : req.body.email
 	},(err, data) => {
@@ -80,35 +79,35 @@ user.delUser = (req, res) => {
 	})
 }
 user.addFriend = (req,res) => {
-  if(req.params.userId === req.params.friendId){
-    res.status(400).send({message: `Bad Request`})
-  } else {
-    User.findOneAndUpdate({
-      _id: req.params.userId
-    },{
-      $push: {friends: req.params.friendId}
-    },{
-      new: true, safe: true, upsert: true
-    },(err, data) => {
-  		if(err) {
-  			res.send(err)
-  		} else {
+  User
+	.findOne({_id: req.params.userId})
+	.populate('friends')
+	.exec((err, data) => {
+		if (err) res.send(err);
+		if (data.email.toString() === req.params.friendEmail.toString()){
+      res.status(400).send({error: err, message: 'Bad Request, you cannot add yourself as a friend'})
+    } else {
+      User.findOneAndUpdate({
+        email: req.params.friendEmail
+      },{
+        $push: {'friends': req.params.userId}
+      },{
+        new: true, safe: true, upsert: true
+      },(err, friend) => {
+        if(err) res.send(err)
         User.findOneAndUpdate({
-          _id: req.params.friendId
+          _id: req.params.userId
         },{
-          $push: {friends: req.params.userId}
+          $push: {'friends': friend._id}
         },{
           new: true, safe: true, upsert: true
         },(err, data) => {
-      		if(err) {
-      			res.send(err)
-      		} else {
-      			res.send(data)
-      		}
-      	});
-  		}
-  	});
-  }
+          if (err) res.send(err)
+          res.send(data)
+        })
+      })
+    }
+	});
 }
 user.removeFriend = (req,res) => {
   if(req.params.userId === req.params.friendId){
