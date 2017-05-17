@@ -8,7 +8,7 @@ helper.authenticate = (req, res, next) => {
 		if(decoded) {
 			next()
 		}else {
-			res.send(err);
+			res.status(401).send(err);
 		}
 	})
 }
