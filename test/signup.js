@@ -12,7 +12,7 @@ const expect    = chai.expect;
 
 chai.use(chaiHttp);
 
-describe('User signup testing', () => {
+describe('USER SIGNUP TESTING', () => {
   let token = null;
   beforeEach(function(done){
     let newUser = new User({
@@ -32,7 +32,7 @@ describe('User signup testing', () => {
     });
   });
 
-  describe('SIGNUP NEW USER WITH A VALID DATA', () =>{
+  describe('\n SIGNUP NEW USER WITH A VALID DATA', () =>{
     it('should return new users', (done)=>{
       chai.request(server)
       .post('/signup')
@@ -54,7 +54,7 @@ describe('User signup testing', () => {
     });
   });
 
-  describe('SIGNUP NEW USER WITHOUT USERNAME', () =>{
+  describe('\n SIGNUP NEW USER WITHOUT USERNAME', () =>{
     it('should return error because username does not exist', (done)=>{
       chai.request(server)
       .post('/signup')
@@ -85,7 +85,7 @@ describe('User signup testing', () => {
     });
   });
 
-  describe('SIGNUP NEW USER WITHOUT PASSWORD', () =>{
+  describe('\n SIGNUP NEW USER WITHOUT PASSWORD', () =>{
     it('should return error because password does not exist', (done)=>{
       chai.request(server)
       .post('/signup')
@@ -100,9 +100,23 @@ describe('User signup testing', () => {
         done();
       });
     });
+
+    it('should return error because req.body.password does not exist', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        phone: "+6200000000002",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
   });
 
-  describe('SIGNUP NEW USER WITHOUT PHONE NUMBER', () =>{
+  describe('\n SIGNUP NEW USER WITHOUT PHONE NUMBER', () =>{
     it('should return error because phone number does not exist', (done)=>{
       chai.request(server)
       .post('/signup')
@@ -119,7 +133,7 @@ describe('User signup testing', () => {
     });
   });
 
-  describe('SIGNUP NEW USER WITHOUT EMAIL', () =>{
+  describe('\n SIGNUP NEW USER WITHOUT EMAIL', () =>{
     it('should return error because email does not exist', (done)=>{
       chai.request(server)
       .post('/signup')
