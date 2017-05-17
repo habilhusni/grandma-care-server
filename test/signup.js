@@ -56,42 +56,4 @@ describe('User signup testing', () => {
       });
     });
   });
-
-  describe('LOGIN /users with registered account', () =>{
-    it('should return token', (done)=>{
-      chai.request(server)
-      .post('/login')
-      .send({
-        username: "john",
-        password: "12345"
-      })
-      .end((err,res)=>{
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        done();
-      });
-    });
-  });
-
-  describe('LOGIN /users with unregistered account', () =>{
-    it('should return unauthorized', (done)=>{
-      chai.request(server)
-      .post('/login')
-      .send({
-        username: "admin",
-        password: "admin"
-      })
-      .end((err,res)=>{
-        res.should.have.status(401);
-        res.body.should.be.a('string');
-        res.body.should.equal("Unauthorized");
-        done();
-      });
-    });
-  });
-
-  function generateTokenDummy(){
-    return jwt.sign({username: "john", role: "admin"}, process.env.SECRET);
-  }
-
-})
+});
