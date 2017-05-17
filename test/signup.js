@@ -146,7 +146,7 @@ describe('USER SIGNUP TESTING', () => {
       });
     });
 
-    it('should return error because phone number format is wrong (1)', (done)=>{
+    it('should return error because phone number format is wrong (number too long)', (done)=>{
       chai.request(server)
       .post('/signup')
       .send({
@@ -161,7 +161,7 @@ describe('USER SIGNUP TESTING', () => {
       });
     });
 
-    it('should return error because phone number format is wrong (2)', (done)=>{
+    it('should return error because phone number format is wrong (number too short)', (done)=>{
       chai.request(server)
       .post('/signup')
       .send({
@@ -176,7 +176,7 @@ describe('USER SIGNUP TESTING', () => {
       });
     });
 
-    it('should return error because phone number format is wrong (3)', (done)=>{
+    it('should return error because phone number format is wrong (number contain alphabet)', (done)=>{
       chai.request(server)
       .post('/signup')
       .send({
