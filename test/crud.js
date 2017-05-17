@@ -144,6 +144,109 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
 
   });
 
+  describe('\n UPDATE PHONE', () =>{
+
+    it('should be success if token included', (done)=> {
+      chai.request(server)
+      .put(`/users/${currentData._id}`)
+      .set('token', token)
+      .send({
+        username: 'test3',
+        phone: '+6288334400120',
+        email: 'something5@gmail.com'
+      })
+      .end((err,res)=> {
+        res.should.have.status(200)
+        res.request.header.token.should.equal(token)
+        done()
+      })
+    })
+
+    it('should be error if token not included', (done)=> {
+      chai.request(server)
+      .put(`/users/${currentData._id}`)
+      .send({
+        username: 'test3',
+        phone: '+6288334400120',
+        email: 'something5@gmail.com'
+      })
+      .end((err,res)=> {
+        res.should.have.status(401)
+        done()
+      })
+    })
+
+    it('should return OK if phone does not exist', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .set('token', token)
+        .send({
+          username: '',
+          phone: '',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(200)
+          done()
+        })
+    })
+
+    it('should return OK if req.body.phone does not exist', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .set('token', token)
+        .send({
+          username: 'test2',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(200)
+          done()
+        })
+    })
+
+    it('should return error if phone contain whitespace', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .set('token', token)
+        .send({
+          username: 'arfa',
+          phone: '+6288334400120 ',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(400)
+          done()
+        })
+    })
+
+    it('should return error if phone length less than 10 digits', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .set('token', token)
+        .send({
+          username: 'arfa',
+          phone: '+62883',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(400)
+          done()
+        })
+    })
+
+    it('should return error if phone length less than 13 digits', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .set('token', token)
+        .send({
+          username: 'arfa',
+          phone: '+628831233315152',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(400)
+          done()
+        })
+    })
+
+  });
+
   describe('\n UPDATE USERNAME', () =>{
 
     it('should be success if token included', (done)=> {
@@ -171,16 +274,44 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
         email: 'something5@gmail.com'
       })
       .end((err,res)=> {
-        res.should.have.status(400)
+        res.should.have.status(401)
         done()
       })
     })
 
-    it('should return error if username does not exist', (done)=> {
+    it('should return OK if username does not exist', (done)=> {
       chai.request(server)
         .put(`/users/${currentData._id}`)
+        .set('token', token)
         .send({
           username: '',
+          phone: '+6288334400120',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(200)
+          done()
+        })
+    })
+
+    it('should return OK if req.body.username does not exist', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .set('token', token)
+        .send({
+          phone: '+6288334400120',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(200)
+          done()
+        })
+    })
+
+    it('should return error if username contain whitespace', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .set('token', token)
+        .send({
+          username: 'arfa ',
           phone: '+6288334400120',
           email: 'something5@gmail.com'
         }).end((err,res)=> {
@@ -190,22 +321,6 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
     })
 
   });
-
-
-
-  it('Update username and phone on test1', (done)=> {
-    chai.request(server)
-      .put(`/users/${currentData._id}`)
-      .set('token', token)
-      .send({
-        username: 'test3',
-        phone: '+6288334400120',
-        email: 'something5@gmail.com'
-      }).end((err,res)=> {
-        res.should.have.status(200)
-        done()
-      })
-  })
 
   it('Delete user from database', (done)=> {
     chai.request(server)
