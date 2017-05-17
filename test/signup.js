@@ -15,9 +15,6 @@ chai.use(chaiHttp);
 describe('User signup testing', () => {
   let token = null;
   beforeEach(function(done){
-    //token dummy for testing
-    token = generateTokenDummy();
-
     let newUser = new User({
       "username" : "admin",
       "password" : password.generate("admin"),
@@ -56,4 +53,73 @@ describe('User signup testing', () => {
       });
     });
   });
+
+  describe('signup new users without username', () =>{
+    it('should return error because username does not exist', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: " ",
+        password: "arfan",
+        phone: "+6200000000002",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+  });
+
+  describe('signup new users without password', () =>{
+    it('should return error because password does not exist', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: " ",
+        phone: "+6200000000002",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+  });
+
+  describe('signup new users without phone number', () =>{
+    it('should return error because phone number does not exist', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        phone: " ",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+  });
+
+  describe('signup new users without email', () =>{
+    it('should return error because email does not exist', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        phone: "+6200000000002",
+        email: " "
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+  });
+
 });

@@ -35,40 +35,48 @@ user.getOneUser = (req, res) => {
 	});
 }
 user.createUser = (req, res) => {
-	let user = new User(
-		{
-      username : req.body.username,
-      password : password.generate(req.body.password),
-			phone : req.body.phone,
-      email : req.body.email,
-			latitude : 0,
-			longitude : 0,
-			accellX : 0,
-			accellY : 0,
-			accellZ : 0
-		});
-	user.save((err, data) => {
-  	if (err) {
-      res.status(400).send(err);
-    } else {
-      res.send(data);
-    }
-	});
+  if (/\s/.test(req.body.username) || /\s/.test(req.body.password) || /\s/.test(req.body.email) || /\s/.test(req.body.phone)){
+    res.status(400).send({message: 'Bad Request'})
+  } else {
+    let user = new User(
+  		{
+        username : req.body.username,
+        password : password.generate(req.body.password),
+  			phone : req.body.phone,
+        email : req.body.email,
+  			latitude : 0,
+  			longitude : 0,
+  			accellX : 0,
+  			accellY : 0,
+  			accellZ : 0
+  		});
+  	user.save((err, data) => {
+    	if (err) {
+        res.status(400).send(err);
+      } else {
+        res.send(data);
+      }
+  	});
+  }
 }
 user.updateUser = (req, res) => {
-	User.findOneAndUpdate({
-		_id: req.params.userId
-	},{
-		username : req.body.username,
-	  phone : req.body.phone,
-    email : req.body.email
-	},(err, data) => {
-    if (err) {
-      res.status(400).send(err);
-    } else {
-      res.send(data);
-    }
-	})
+  if (/\s/.test(req.body.username) || /\s/.test(req.body.email) || /\s/.test(req.body.phone)) {
+    res.status(400).send({message: 'Bad Request'})
+  } else {
+    User.findOneAndUpdate({
+  		_id: req.params.userId
+  	},{
+  		username : req.body.username,
+  	  phone : req.body.phone,
+      email : req.body.email
+  	},(err, data) => {
+      if (err) {
+        res.status(400).send(err);
+      } else {
+        res.send(data);
+      }
+  	})
+  }
 }
 user.delUser = (req, res) => {
 	User.findOneAndRemove({

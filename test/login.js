@@ -35,61 +35,6 @@ describe('User signup testing', () => {
     });
   });
 
-  describe('signup new users with a valid data', () =>{
-    it('should return new users', (done)=>{
-      chai.request(server)
-      .post('/signup')
-      .send({
-        username: "arfan",
-        password: "arfan",
-        phone: "+6200000000002",
-        email: "arfan@arfan.com"
-      })
-      .end((err,res)=>{
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        res.body.username.should.equal("arfan");
-        res.body.phone.should.equal("+6200000000002");
-        res.body.email.should.equal("arfan@arfan.com");
-        res.body.password.should.a("string");
-        done();
-      });
-    });
-  });
-
-  describe('LOGIN /users with registered account', () =>{
-    it('should return token', (done)=>{
-      chai.request(server)
-      .post('/login')
-      .send({
-        username: "john",
-        password: "12345"
-      })
-      .end((err,res)=>{
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        done();
-      });
-    });
-  });
-
-  describe('LOGIN /users with unregistered account', () =>{
-    it('should return unauthorized', (done)=>{
-      chai.request(server)
-      .post('/login')
-      .send({
-        username: "admin",
-        password: "admin"
-      })
-      .end((err,res)=>{
-        res.should.have.status(401);
-        res.body.should.be.a('string');
-        res.body.should.equal("Unauthorized");
-        done();
-      });
-    });
-  });
-
   function generateTokenDummy(){
     return jwt.sign({username: "john", role: "admin"}, process.env.SECRET);
   }
