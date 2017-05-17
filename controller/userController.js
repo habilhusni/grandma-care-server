@@ -71,7 +71,9 @@ user.updateUser = (req, res) => {
   		username : req.body.username,
   	  phone : req.body.phone,
       email : req.body.email
-  	},(err, data) => {
+  	},{
+      new: true, safe: true, upsert: true
+    },(err, data) => {
       if (err) {
         res.status(400).send(err);
       } else {
