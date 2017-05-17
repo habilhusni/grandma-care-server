@@ -110,7 +110,7 @@ describe('USER SIGNUP TESTING', () => {
         email: "arfan@arfan.com"
       })
       .end((err,res)=>{
-        res.should.have.status(400);
+        res.should.have.status(500);
         done();
       });
     });
@@ -131,6 +131,65 @@ describe('USER SIGNUP TESTING', () => {
         done();
       });
     });
+
+    it('should return error because req.body.phone does not exist', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+
+    it('should return error because phone number format is wrong (1)', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        phone: "+62012345678901",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+
+    it('should return error because phone number format is wrong (2)', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        phone: "+62012345",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+
+    it('should return error because phone number format is wrong (3)', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        phone: "+620123456ab901",
+        email: "arfan@arfan.com"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
   });
 
   describe('\n SIGNUP NEW USER WITHOUT EMAIL', () =>{
@@ -142,6 +201,35 @@ describe('USER SIGNUP TESTING', () => {
         password: "arfan",
         phone: "+6200000000002",
         email: " "
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+
+    it('should return error because req.body.email does not exist', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        phone: "+6200000000002",
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+
+    it('should return error because email format is wrong', (done)=>{
+      chai.request(server)
+      .post('/signup')
+      .send({
+        username: "arfan",
+        password: "arfan",
+        phone: "+6200000000002",
+        email: "arfanmail.com"
       })
       .end((err,res)=>{
         res.should.have.status(400);
