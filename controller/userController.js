@@ -62,6 +62,8 @@ user.createUser = (req, res) => {
 user.updateUser = (req, res) => {
   if (/\s/.test(req.body.username) || /\s/.test(req.body.email) || /\s/.test(req.body.phone)) {
     res.status(400).send({message: 'Bad Request'})
+  } else if (req.body.username.length === 0 || req.body.phone.length === 0 || req.body.email.length === 0){
+    res.status(400).send({message: 'Bad Request'})
   } else {
     User.findOneAndUpdate({
   		_id: req.params.userId
