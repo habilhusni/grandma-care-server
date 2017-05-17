@@ -62,24 +62,25 @@ user.createUser = (req, res) => {
 user.updateUser = (req, res) => {
   if (/\s/.test(req.body.username) || /\s/.test(req.body.email) || /\s/.test(req.body.phone)) {
     res.status(400).send({message: 'Bad Request'})
-  } else if (req.body.username.length === 0 || req.body.phone.length === 0 || req.body.email.length === 0){
-    res.status(400).send({message: 'Bad Request'})
   } else {
-    User.findOneAndUpdate({
+    User.findOne({
   		_id: req.params.userId
-  	},{
-  		username : req.body.username,
-  	  phone : req.body.phone,
-      email : req.body.email
-  	},{
-      new: true, safe: true, upsert: true
-    },(err, data) => {
+  	},(err, data) => {
       if (err) {
-        res.status(400).send(err);
+        res.send(err);
       } else {
-        res.send(data);
+        data.username = req.body.username,
+        data.phone = req.body.phone,
+        data.email = req.body.email
+        data.save((err, response) => {
+        	if (err) {
+            res.status(400).send(err);
+          } else {
+            res.send(response);
+          }
+      	});
       }
-  	})
+  	});
   }
 }
 user.delUser = (req, res) => {
