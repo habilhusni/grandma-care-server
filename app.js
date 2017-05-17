@@ -100,9 +100,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 const dbconfig = {
-	development:'mongodb://localhost/final-project-dev',
+	development:`mongodb://arfanizar:${process.env.DBPASSWORD}@grandma-care-server-shard-00-00-sbzcg.mongodb.net:27017,grandma-care-server-shard-00-01-sbzcg.mongodb.net:27017,grandma-care-server-shard-00-02-sbzcg.mongodb.net:27017/final-project-dev?ssl=true&replicaSet=grandma-care-server-shard-0&authSource=admin`,
 	test:'mongodb://localhost/final-project-test',
-	production: 'mongodb://localhost/final-project-prod'
+	production: `mongodb://arfanizar:${process.env.DBPASSWORD}@grandma-care-server-shard-00-00-sbzcg.mongodb.net:27017,grandma-care-server-shard-00-01-sbzcg.mongodb.net:27017,grandma-care-server-shard-00-02-sbzcg.mongodb.net:27017/final-project-prod?ssl=true&replicaSet=grandma-care-server-shard-0&authSource=admin`
 }
 
 mongoose.connect(dbconfig[app.settings.env], (err,success)=> {
