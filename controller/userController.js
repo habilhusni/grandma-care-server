@@ -87,8 +87,13 @@ user.delUser = (req, res) => {
 	User.findOneAndRemove({
 		_id: req.params.userId
 	}, (err, data) => {
-		if(err) res.send(err)
-		res.send(data)
+		if(err) {
+      res.status(400).send(err)
+    } else if(!data) {
+      res.status(400).send(err)
+    } else {
+      res.send(data)
+    }
 	})
 }
 user.addFriend = (req,res) => {
@@ -96,29 +101,44 @@ user.addFriend = (req,res) => {
 	.findOne({_id: req.params.userId})
 	.populate('friends')
 	.exec((err, data) => {
-		if (err) res.send(err);
+		if (err) res.status(400).send(err);
 		if (data.email.toString() === req.params.friendEmail.toString()){
       res.status(400).send({error: err, message: 'Bad Request, you cannot add yourself as a friend'})
     } else {
-      User.findOneAndUpdate({
-        email: req.params.friendEmail
-      },{
-        $push: {'friends': req.params.userId}
-      },{
-        new: true, safe: true, upsert: true
-      },(err, friend) => {
-        if(err) res.send(err)
-        User.findOneAndUpdate({
-          _id: req.params.userId
-        },{
-          $push: {'friends': friend._id}
-        },{
-          new: true, safe: true, upsert: true
-        },(err, data) => {
-          if (err) res.send(err)
-          res.send(data)
+      const sameEmail = data.friends.filter(friend => friend.email === req.params.friendEmail.toString())
+      if(sameEmail.length > 0) {
+        res.status(400).send({message: 'Friend already on the list'})
+      } else {
+        User.findOne({
+          email: req.params.friendEmail
+        }, (err,friend) => {
+          if(err) {
+            res.status(400).send(err)
+          } else if(!friend) {
+            res.status(400).send(err)
+          } else {
+            User.findOneAndUpdate({
+              email: req.params.friendEmail
+            },{
+              $push: {'friends': req.params.userId}
+            },{
+              new: true, safe: true, upsert: true
+            },(err, friend) => {
+              if(err) res.status(400).send(err)
+              User.findOneAndUpdate({
+                _id: req.params.userId
+              },{
+                $push: {'friends': friend._id}
+              },{
+                new: true, safe: true, upsert: true
+              },(err, data) => {
+                if (err) res.status(400).send(err)
+                res.send(data)
+              })
+            })
+          }
         })
-      })
+      }
     }
 	});
 }
@@ -134,7 +154,7 @@ user.removeFriend = (req,res) => {
   			new: true, safe: true, upsert: true
   		},(err, data) => {
   		if(err) {
-  			res.send(err)
+  			res.status(400).send(err)
   		} else {
         User.findOneAndUpdate({
       			_id: req.params.friendId
@@ -144,7 +164,7 @@ user.removeFriend = (req,res) => {
       			new: true, safe: true, upsert: true
       		},(err, data) => {
       		if(err) {
-      			res.send(err)
+      			res.status(400).send(err)
       		} else {
       			res.send(data)
       		}
@@ -154,20 +174,30 @@ user.removeFriend = (req,res) => {
   }
 }
 user.updateLocation = (req,res) => {
-	User.findOneAndUpdate({
+  User.findOne({
 			_id: req.params.userId
-		},{
-			latitude : Number(req.params.latitude),
-			longitude : Number(req.params.longitude),
-		},{
-			new: true, safe: true, upsert: true
-		},(err, data) => {
-		if(err) {
-			res.send(err)
-		} else {
-			res.send(data)
-		}
-	})
+		},(err,data) => {
+      if(err) {
+        res.status(400).send(err)
+      } else if(!data){
+        res.status(400).send(err)
+      } else {
+        User.findOneAndUpdate({
+      			_id: req.params.userId
+      		},{
+      			latitude : Number(req.params.latitude),
+      			longitude : Number(req.params.longitude),
+      		},{
+      			new: true, safe: true, upsert: true
+      		},(err, data) => {
+      		if(err) {
+      			res.status(400).send(err)
+      		} else {
+      			res.send(data)
+      		}
+      	})
+      }
+    })
 }
 user.updateSensor = (req,res) => {
 	User.findOneAndUpdate({
