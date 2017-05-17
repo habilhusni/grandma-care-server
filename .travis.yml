@@ -1,9 +1,19 @@
 language: node_js
 node_js:
-  - "6"
+- '6'
 before_script:
-  - npm install -g mocha
+- npm install -g mocha
 services:
-  - mongodb
+- mongodb
 script:
-  - npm test
+- npm test
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: AKIAIBEZAIGAGGLFT5RA
+  secret_access_key:
+    secure: LO3nBRy3AZjlF4SgFsmLWNpLE273OpzxPYse3SKP5/KadSLV5E66w1rmszIEcqyak39PdO+SXItwj5GTIbu2D2pfQMydtuST58pvw1g36haeyITwSgA6Z+/nVmWNiLvp1FyOj1mKi7PxL/9XOILohfaMd1P4Rn94mgXI8dLXBXvV37+t3KeyFOYTBM+tq0/tdYqQax2+Hso68z7asmltlAEe1mVpAbV/VmGKJujkjAxrn316P0nWrG4W4xdBLYD59uiPspirAPHiHRqunEZk6BMEyENV/pMpOQA/NYcnkCdHqSo4P6Ta7mqYrFkOSw+LXIv8gCp3QeyKGKhN00cm2Cb0gQRnz96wxxk2ed3Ep7hKWHfKvi4tVBrzkYP/t+6Tt5e1k3YXubEtHLngR9kPcDGi4k2LaYN6/EEXIbHQREhdAn7STaIOwlKhpXL5Iz6REC2S9gJ9TCNtAoQfECFtXRc7IZreFqzgMrje9HA/TItz5EzWbgSJ4qhhfbupF0ptb1HI47cvVn8nsO6RZoqyPlGSTX3AXSxIfj4kefaaxgYFntJmtz//sfpQA7DaxiYXATbf/yAX16K8mK15lLSZhTKB7j28BNLiIopQCX9ZyCiYNNnghVRR1O+zO+z1QSAPagEmI8fZvAUdZ7OjPLS1wuQaL8G1pzd2reLBR/9HDWc=
+  region: eu-central-1
+  app: grandma-care-server
+  env: grandma-care-server-prod
+  on:
+    repo: arfanizar/grandma-care-server
