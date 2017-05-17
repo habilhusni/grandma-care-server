@@ -87,32 +87,110 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       })
   })
 
-  it('Read Users from database', (done)=> {
-    chai.request(server)
+  describe('\n READ USERS FROM DATABASE', () =>{
+
+    it('must have token', (done)=>{
+      chai.request(server)
       .get('/users')
       .set('token', token)
-      .end((err,res)=> {
-        res.should.have.status(200)
+      .end((err,res)=>{
+        res.should.have.status(200);
+        res.request.header.should.have.property('token');
+        done();
+      });
+    });
+
+    it('must be an array', (done)=>{
+      chai.request(server)
+      .get('/users')
+      .set('token', token)
+      .end((err,res)=>{
+        res.should.have.status(200);
         res.body.should.be.a('array')
         res.body.should.have.lengthOf(3)
-        done()
-      })
-  })
+        done();
+      });
+    });
 
-  it('Find 1 user from database', (done)=> {
-    chai.request(server)
-      .get(`/users/${currentData._id}`)
+  });
+
+  describe('\n FIND 1 USER FROM DATABASE', () =>{
+
+    it('must have token', (done)=> {
+      chai.request(server)
+        .get(`/users/${currentData._id}`)
+        .set('token', token)
+        .end((err,res)=> {
+          res.should.have.status(200)
+          res.request.header.token.should.equal(token)
+          done()
+        })
+    })
+
+    it('should be an object', (done)=> {
+      chai.request(server)
+        .get(`/users/${currentData._id}`)
+        .set('token', token)
+        .end((err,res)=> {
+          res.should.have.status(200)
+          res.body.should.be.a('object')
+          res.body.should.have.property('username')
+          res.body.should.have.property('password')
+          res.body.should.have.property('phone')
+          res.body.should.have.property('friends')
+          done()
+        })
+    })
+
+  });
+
+  describe('\n UPDATE USERNAME', () =>{
+
+    it('should be success if token included', (done)=> {
+      chai.request(server)
+      .put(`/users/${currentData._id}`)
       .set('token', token)
+      .send({
+        username: 'test3',
+        phone: '+6288334400120',
+        email: 'something5@gmail.com'
+      })
       .end((err,res)=> {
         res.should.have.status(200)
-        res.body.should.be.a('object')
-        res.body.should.have.property('username')
-        res.body.should.have.property('password')
-        res.body.should.have.property('phone')
-        res.body.should.have.property('friends')
+        res.request.header.token.should.equal(token)
         done()
       })
-  })
+    })
+
+    it('should be error if token not included', (done)=> {
+      chai.request(server)
+      .put(`/users/${currentData._id}`)
+      .send({
+        username: 'test3',
+        phone: '+6288334400120',
+        email: 'something5@gmail.com'
+      })
+      .end((err,res)=> {
+        res.should.have.status(400)
+        done()
+      })
+    })
+
+    it('should return error if username does not exist', (done)=> {
+      chai.request(server)
+        .put(`/users/${currentData._id}`)
+        .send({
+          username: '',
+          phone: '+6288334400120',
+          email: 'something5@gmail.com'
+        }).end((err,res)=> {
+          res.should.have.status(400)
+          done()
+        })
+    })
+
+  });
+
 
 
   it('Update username and phone on test1', (done)=> {
@@ -121,7 +199,6 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       .set('token', token)
       .send({
         username: 'test3',
-        newPassword: '12345',
         phone: '+6288334400120',
         email: 'something5@gmail.com'
       }).end((err,res)=> {
