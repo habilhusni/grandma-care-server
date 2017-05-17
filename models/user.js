@@ -10,7 +10,11 @@ var userSchema = new Schema({
     unique: true,
     validate: {
       validator: function(v) {
-        return /([0-9]{10,13})/.test(v);
+        if (v.length > 14 || v.length < 10 ){
+          return false
+        } else {
+          return /([0-9])\w+/.test(v)
+        }
       },
       message: '{VALUE} is not a valid phone!'
     }

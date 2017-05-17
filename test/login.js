@@ -19,9 +19,10 @@ describe('USER LOGIN TESTING', () => {
     token = generateTokenDummy();
 
     let newUser = new User({
-      "username"  : "john",
-      "password"  : password.generate("12345"),
-      "phone"     : "+621234567890"
+      "username" : "admin",
+      "password" : password.generate("admin"),
+      "phone" : "+6200000000001",
+      "email" : "admin@admin.com"
     });
     newUser.save(function(err, user){
       done()
@@ -34,44 +35,8 @@ describe('USER LOGIN TESTING', () => {
     });
   });
 
-  describe('SIGNUP /users with new users', () =>{
-    it('should return new users', (done)=>{
-      chai.request(server)
-      .post('/signup')
-      .send({
-        username: "arfanizar",
-        password: "12345",
-        phone: "+6280123456789"
-      })
-      .end((err,res)=>{
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        res.body.username.should.equal("arfanizar");
-        res.body.phone.should.equal("+6280123456789");
-        res.body.password.should.a("string");
-        done();
-      });
-    });
-  });
-
-  describe('LOGIN /users with registered account', () =>{
+  describe('\n LOGIN REGISTERED ACCOUNT', () =>{
     it('should return token', (done)=>{
-      chai.request(server)
-      .post('/login')
-      .send({
-        username: "john",
-        password: "12345"
-      })
-      .end((err,res)=>{
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        done();
-      });
-    });
-  });
-
-  describe('LOGIN /users with unregistered account', () =>{
-    it('should return unauthorized', (done)=>{
       chai.request(server)
       .post('/login')
       .send({
@@ -79,16 +44,56 @@ describe('USER LOGIN TESTING', () => {
         password: "admin"
       })
       .end((err,res)=>{
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        done();
+      });
+    });
+  });
+
+  describe('\n LOGIN WRONG ACCOUNT', () =>{
+    it('should return error if username and password is wrong', (done)=>{
+      chai.request(server)
+      .post('/login')
+      .send({
+        username: "admin2",
+        password: "admin2"
+      })
+      .end((err,res)=>{
         res.should.have.status(401);
-        res.body.should.be.a('string');
-        res.body.should.equal("Unauthorized");
+        done();
+      });
+    });
+
+    it('should return error if username is wrong', (done)=>{
+      chai.request(server)
+      .post('/login')
+      .send({
+        username: "admin2",
+        password: "admin"
+      })
+      .end((err,res)=>{
+        res.should.have.status(401);
+        done();
+      });
+    });
+
+    it('should return error if password is wrong', (done)=>{
+      chai.request(server)
+      .post('/login')
+      .send({
+        username: "admin",
+        password: "admin2"
+      })
+      .end((err,res)=>{
+        res.should.have.status(401);
         done();
       });
     });
   });
 
   function generateTokenDummy(){
-    return jwt.sign({username: "john", role: "admin"}, process.env.SECRET);
+    return jwt.sign({username: "admin"}, process.env.SECRET);
   }
 
-})
+});
