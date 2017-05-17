@@ -73,7 +73,20 @@ describe('USER LOGIN TESTING', () => {
         password: "admin"
       })
       .end((err,res)=>{
-        res.should.have.status(400);
+        res.should.have.status(401);
+        done();
+      });
+    });
+
+    it('should return error if password is wrong', (done)=>{
+      chai.request(server)
+      .post('/login')
+      .send({
+        username: "admin",
+        password: "admin2"
+      })
+      .end((err,res)=>{
+        res.should.have.status(401);
         done();
       });
     });
