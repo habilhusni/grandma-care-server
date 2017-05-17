@@ -90,6 +90,32 @@ describe('USER LOGIN TESTING', () => {
         done();
       });
     });
+
+    it('should return error if username is null', (done)=>{
+      chai.request(server)
+      .post('/login')
+      .send({
+        username: "",
+        password: "admin"
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
+
+    it('should return error if password is null', (done)=>{
+      chai.request(server)
+      .post('/login')
+      .send({
+        username: "admin",
+        password: ""
+      })
+      .end((err,res)=>{
+        res.should.have.status(400);
+        done();
+      });
+    });
   });
 
   function generateTokenDummy(){
