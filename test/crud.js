@@ -176,7 +176,7 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       })
     })
 
-    it('should return OK if phone does not exist', (done)=> {
+    it('should return error if phone does not exist', (done)=> {
       chai.request(server)
         .put(`/users/${currentData._id}`)
         .set('token', token)
@@ -185,12 +185,12 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
           phone: '',
           email: 'something5@gmail.com'
         }).end((err,res)=> {
-          res.should.have.status(200)
+          res.should.have.status(400)
           done()
         })
     })
 
-    it('should return OK if req.body.phone does not exist', (done)=> {
+    it('should return error if req.body.phone does not exist', (done)=> {
       chai.request(server)
         .put(`/users/${currentData._id}`)
         .set('token', token)
@@ -198,7 +198,7 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
           username: 'test2',
           email: 'something5@gmail.com'
         }).end((err,res)=> {
-          res.should.have.status(200)
+          res.should.have.status(500)
           done()
         })
     })
@@ -279,7 +279,7 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
       })
     })
 
-    it('should return OK if username does not exist', (done)=> {
+    it('should return error if username does not exist', (done)=> {
       chai.request(server)
         .put(`/users/${currentData._id}`)
         .set('token', token)
@@ -288,12 +288,12 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
           phone: '+6288334400120',
           email: 'something5@gmail.com'
         }).end((err,res)=> {
-          res.should.have.status(200)
+          res.should.have.status(400)
           done()
         })
     })
 
-    it('should return OK if req.body.username does not exist', (done)=> {
+    it('should return error if req.body.username does not exist', (done)=> {
       chai.request(server)
         .put(`/users/${currentData._id}`)
         .set('token', token)
@@ -301,7 +301,7 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
           phone: '+6288334400120',
           email: 'something5@gmail.com'
         }).end((err,res)=> {
-          res.should.have.status(200)
+          res.should.have.status(500)
           done()
         })
     })
