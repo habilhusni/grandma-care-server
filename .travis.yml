@@ -15,5 +15,6 @@ deploy:
   region: eu-central-1
   app: grandma-care-server
   env: grandma-care-server-prod
+  bucket_name: elasticbeanstalk-eu-central-1-864367216564
   on:
     repo: arfanizar/grandma-care-server
