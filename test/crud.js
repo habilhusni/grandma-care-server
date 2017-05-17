@@ -620,7 +620,7 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
 
     it('should be error if user ID not found', (done)=> {
       chai.request(server)
-        .put(`/users/591be543685c931a507c0999/location/1/1`)
+        .put(`/users/591be543685c931a507c0999/accelero/1/1/1`)
         .set('token', token)
         .end((err,res)=> {
           res.should.have.status(400)
@@ -630,15 +630,49 @@ describe('USER CRUD OTHER THAN LOGIN TEST', ()=> {
 
   });
 
-  it('Remove friend in database', (done)=> {
-    chai.request(server)
-      .delete(`/users/${currentData._id}/remove/${secondData._id}`)
-      .set('token', token)
-      .end((err,res)=> {
-        res.should.have.status(200)
-        res.body.friends.should.have.lengthOf(0)
-        done()
-      })
-  })
+  describe('\n REMOVE FRIEND TEST', () => {
+
+    it('Should be success if token included', (done)=> {
+      chai.request(server)
+        .delete(`/users/${currentData._id}/remove/${secondData._id}`)
+        .set('token', token)
+        .end((err,res)=> {
+          res.should.have.status(200)
+          res.body.friends.should.have.lengthOf(0)
+          done()
+        })
+    })
+
+    it('Should be success if token not included', (done)=> {
+      chai.request(server)
+        .delete(`/users/${currentData._id}/remove/${secondData._id}`)
+        .end((err,res)=> {
+          res.should.have.status(401)
+          done()
+        })
+    })
+
+    it('should be error if user ID not found', (done)=> {
+      chai.request(server)
+        .delete(`/users/591be543685c931a507c0999/remove/${secondData._id}`)
+        .set('token', token)
+        .end((err,res)=> {
+          res.should.have.status(400)
+          done()
+        })
+    })
+
+    it('should be error if friend ID not found', (done)=> {
+      chai.request(server)
+        .delete(`/users/${currentData._id}/remove/591be543685c931a507c0999`)
+        .set('token', token)
+        .end((err,res)=> {
+          res.should.have.status(400)
+          done()
+        })
+    })
+
+  });
+
 
 })

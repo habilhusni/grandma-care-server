@@ -146,31 +146,51 @@ user.removeFriend = (req,res) => {
   if(req.params.userId === req.params.friendId){
     res.status(400).send({message: `Bad Request`})
   } else {
-    User.findOneAndUpdate({
-  			_id: req.params.userId
-  		},{
-  			$pull: {'friends': req.params.friendId}
-  		},{
-  			new: true, safe: true, upsert: true
-  		},(err, data) => {
-  		if(err) {
-  			res.status(400).send(err)
-  		} else {
-        User.findOneAndUpdate({
-      			_id: req.params.friendId
-      		},{
-      			$pull: {'friends': req.params.userId}
-      		},{
-      			new: true, safe: true, upsert: true
-      		},(err, data) => {
-      		if(err) {
-      			res.status(400).send(err)
-      		} else {
-      			res.send(data)
-      		}
-      	});
-  		}
-  	});
+    User.findOne({
+      _id: req.params.userId
+    }, (err1,user) => {
+      if(err1) {
+        res.status(400).send(err1)
+      } else if(!user) {
+        res.status(400).send({message: 'No User found'})
+      } else {
+        User.findOne({
+          _id: req.params.friendId
+        }, (err2,friend) => {
+          if(err2) {
+            res.status(400).send(err2)
+          } else if(!friend) {
+            res.status(400).send({message: 'No Friend found'})
+          } else {
+            User.findOneAndUpdate({
+          			_id: req.params.userId
+          		},{
+          			$pull: {'friends': req.params.friendId}
+          		},{
+          			new: true, safe: true, upsert: true
+          		},(err, data) => {
+          		if(err) {
+          			res.status(400).send(err)
+          		} else {
+                User.findOneAndUpdate({
+              			_id: req.params.friendId
+              		},{
+              			$pull: {'friends': req.params.userId}
+              		},{
+              			new: true, safe: true, upsert: true
+              		},(err, data) => {
+              		if(err) {
+              			res.status(400).send(err)
+              		} else {
+              			res.send(data)
+              		}
+              	});
+          		}
+          	});
+          }
+        })
+      }
+    })
   }
 }
 user.updateLocation = (req,res) => {
@@ -200,22 +220,32 @@ user.updateLocation = (req,res) => {
     })
 }
 user.updateSensor = (req,res) => {
-	User.findOneAndUpdate({
-			_id: req.params.userId
-		},{
-			accellX : Number(req.params.x),
-			accellY : Number(req.params.y),
-			accellZ : Number(req.params.z)
-		},{
-			new: true, safe: true, upsert: true
-		},(err, data) => {
-		if(err) {
-			res.send(err)
-		} else {
-			res.send(data)
-	    device.publish('topic_2', JSON.stringify({userId:data._id, x: data.accellX, y: data.accellY, z: data.accellZ}));
-		}
-	})
+  User.findOne({
+    _id: req.params.userId
+  },(err,data) => {
+    if(err) {
+      res.status(400).send(err)
+    } else if(!data) {
+      res.status(400).send({message: 'No User Found'})
+    } else {
+      User.findOneAndUpdate({
+    			_id: req.params.userId
+    		},{
+    			accellX : Number(req.params.x),
+    			accellY : Number(req.params.y),
+    			accellZ : Number(req.params.z)
+    		},{
+    			new: true, safe: true, upsert: true
+    		},(err, data) => {
+    		if(err) {
+    			res.status(400).send(err)
+    		} else {
+    			res.send(data)
+    	    device.publish('topic_2', JSON.stringify({userId:data._id, x: data.accellX, y: data.accellY, z: data.accellZ}));
+    		}
+    	})
+    }
+  })
 }
 user.login = (req, res) => {
 	var token = jwt.sign({username: req.user.username, password: req.user.password}, process.env.SECRET);
