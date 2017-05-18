@@ -6,6 +6,7 @@ const passport    = require('passport');
 
 router.get('/users', auth.authenticate, userControl.getUser);
 router.get('/users/:userId', auth.authenticate, userControl.getOneUser);
+router.get('/users/:userId/panic', auth.authenticate, userControl.panicButton);
 router.post('/signup', userControl.createUser);
 router.post('/login', passport.authenticate('local', { session: false }), userControl.login);
 router.put('/users/:userId/add/:friendEmail', auth.authenticate, userControl.addFriend);

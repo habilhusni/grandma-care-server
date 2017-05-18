@@ -5,6 +5,7 @@ const User = require('../models/user');
 const password = require('password-hash');
 const jwt = require('jsonwebtoken');
 const awsIot = require('aws-iot-device-sdk');
+const nodemailer = require('nodemailer');
 require('dotenv').config()
 
 const device = awsIot.device({
@@ -13,6 +14,13 @@ const device = awsIot.device({
     caPath: './root-CA.crt',
       host: 'a38x4799nd8aym.iot.eu-central-1.amazonaws.com',
     region: 'eu-central-1'
+});
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  }
 });
 const user = {}
 
@@ -244,6 +252,32 @@ user.updateSensor = (req,res) => {
     	    device.publish('topic_2', JSON.stringify({userId:data._id, x: data.accellX, y: data.accellY, z: data.accellZ}));
     		}
     	})
+    }
+  })
+}
+user.panicButton = (req, res) => {
+  User
+  .findOne({_id: req.params.userId})
+  .populate('friends')
+  .exec((err,data) => {
+    if(err) {
+      res.status(400).send(err)
+    } else {
+      data.friends.map(friend => {
+        let mailOptions = {
+            from    : '"Grandma Care" <grandma@care.com>', // sender address
+            to      : friend.email, // list of receivers
+            subject : `${friend.name} IS PANIC`, // Subject line
+            text    : `We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username} ?`, // plain text body
+            html    : `<h3> <b> We have detected ${data.username} is pressing PANIC BUTTON perhaps there is something wrong with ${data.username} ? , Last known location : http://maps.google.com/maps?q=${data.latitude},${data.longitude} <br> Contact ${data.username} now: ${data.phone} </b> </h3>` // html body
+        };
+        return transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return console.log(error);
+          }
+          console.log('Message %s sent: %s', info.messageId, info.response);
+        });
+      });
     }
   })
 }
