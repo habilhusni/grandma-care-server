@@ -267,7 +267,7 @@ user.panicButton = (req, res) => {
         let mailOptions = {
             from    : '"Grandma Care" <grandma@care.com>', // sender address
             to      : friend.email, // list of receivers
-            subject : `${friend.name} IS PANIC`, // Subject line
+            subject : `${data.username} IS PANIC`, // Subject line
             text    : `We have detected that there is something wrong with ${data.username} phone, perhaps something happened with ${data.username} ?`, // plain text body
             html    : `<h3> <b> We have detected ${data.username} is pressing PANIC BUTTON perhaps there is something wrong with ${data.username} ? , Last known location : http://maps.google.com/maps?q=${data.latitude},${data.longitude} <br> Contact ${data.username} now: ${data.phone} </b> </h3>` // html body
         };
